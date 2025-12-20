@@ -7,6 +7,7 @@ import Rating from "./Rating.tsx";
 import { IProduct } from "../interfaces.ts";
 
 const Product = ({ product }: { product: IProduct }) => {
+  console.log(product);
   return (
     <Card className="my-3 p-3 rounded">
       <Link to={`/product/${product._id}`}>
