@@ -6,6 +6,7 @@ import connectDB from "./config/db.ts";
 
 import productRoutes from "./routes/productRoutes.ts";
 import userRoutes from "./routes/userRoutes.ts";
+import orderRoutes from "./routes/orderRoutes.ts";
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.ts";
 
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
