@@ -1,5 +1,5 @@
-import { apiSlice } from "./apiSlice";
-import { ORDERS_URL } from "../constants";
+import { apiSlice } from "./apiSlice.ts";
+import { ORDERS_URL } from "../constants.ts";
 
 export const ordersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

@@ -5,14 +5,14 @@ export const addDecilamals = (num: number) => {
 export const updateCart = (
   state = {
     cartItems: [],
-    itemsprice: "0",
-    shippingprice: "0",
-    taxprice: "0",
-    totalprice: "0",
+    itemsPrice: "0",
+    shippingPrice: "0",
+    taxPrice: "0",
+    totalPrice: "0",
   }
 ) => {
   // Calculate items price
-  state.itemsprice = addDecilamals(
+  state.itemsPrice = addDecilamals(
     state.cartItems.reduce(
       (acc: number, item: any) => acc + item.price * item.qty,
       0
@@ -20,18 +20,18 @@ export const updateCart = (
   );
 
   // Calculate shipping price (If order is over $100, free shipping, else $10 shipping)
-  state.shippingprice = addDecilamals(Number(state.itemsprice) > 100 ? 0 : 10);
+  state.shippingPrice = addDecilamals(Number(state.itemsPrice) > 100 ? 0 : 10);
 
   // Calculate tax price (15% tax)
-  state.taxprice = addDecilamals(
-    Number((0.15 * Number(state.itemsprice)).toFixed(2))
+  state.taxPrice = addDecilamals(
+    Number((0.15 * Number(state.itemsPrice)).toFixed(2))
   );
 
   // Calculate total price
-  state.totalprice = (
-    Number(state.itemsprice) +
-    Number(state.shippingprice) +
-    Number(state.taxprice)
+  state.totalPrice = (
+    Number(state.itemsPrice) +
+    Number(state.shippingPrice) +
+    Number(state.taxPrice)
   ).toFixed(2);
 
   localStorage.setItem("cart", JSON.stringify(state));
