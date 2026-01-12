@@ -6,9 +6,59 @@ import { toast } from "react-toastify";
 
 import Message from "../components/Message.tsx";
 import Loader from "../components/Loader.tsx";
+import { FaTimes } from "react-icons/fa";
 
 import { useProfileMutation } from "../slices/usersApiSlice.ts";
+import { useGetMyOrdersQuery } from "../slices/ordersApiSlice.ts";
 import { setCredentials } from "../slices/authSlice.ts";
+
+const TableContent = ({ myOrders }: { myOrders: any[] }) => {
+  return (
+    <Table striped hover responsive className="table-sm">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>DATE</th>
+          <th>TOTAL</th>
+          <th>PAID</th>
+          <th>DELIVERED</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {myOrders.map((order: any) => (
+          <tr key={order._id}>
+            <td>{order._id}</td>
+            <td>{order.createdAt.substring(0, 10)}</td>
+            <td>${order.totalPrice}</td>
+            <td>
+              {order.isPaid ? (
+                order.paidAt.substring(0, 10)
+              ) : (
+                <FaTimes style={{ color: "red" }} />
+              )}
+            </td>
+            <td>
+              {order.isDelivered ? (
+                order.deliveredAt.substring(0, 10)
+              ) : (
+                <FaTimes style={{ color: "red" }} />
+              )}
+            </td>
+            <td>
+              <LinkContainer to={`/order/${order._id}`}>
+                <Button variant="light" className="btn-sm">
+                  Details
+                </Button>
+              </LinkContainer>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
@@ -23,6 +73,12 @@ const ProfileScreen = () => {
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
+  const {
+    data: myOrders,
+    isLoading: loadingMyOrders,
+    error,
+  } = useGetMyOrdersQuery({});
+
   useEffect(() => {
     if (userInfo) {
       setName(userInfo.name);
@@ -32,7 +88,8 @@ const ProfileScreen = () => {
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    const passwordsDoesntMatch = password !== confirmPassword;
+    if (passwordsDoesntMatch) {
       toast.error("Passwords do not match");
     } else {
       try {
@@ -46,7 +103,7 @@ const ProfileScreen = () => {
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
       } catch (err) {
-        toast.error(err?.data?.message || err?.error);
+        toast.error((err as any)?.data?.message || (err as any)?.error);
       }
     }
   };
@@ -103,7 +160,21 @@ const ProfileScreen = () => {
           {loadingUpdateProfile && <Loader />}
         </Form>
       </Col>
-      <Col md={9}>Column</Col>
+      <Col md={9}>
+        <h2>My Orders</h2>
+        {loadingMyOrders && <Loader />}
+        {error && (
+          <Message variant="danger">
+            {(error as any)?.data?.message || (error as any)?.error}
+          </Message>
+        )}
+        {myOrders && myOrders.length === 0 && (
+          <Message>You have no orders</Message>
+        )}
+        {myOrders && myOrders.length > 0 && (
+          <TableContent myOrders={myOrders} />
+        )}
+      </Col>
     </Row>
   );
 };
