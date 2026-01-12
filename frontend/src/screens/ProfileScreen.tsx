@@ -168,12 +168,8 @@ const ProfileScreen = () => {
             {(error as any)?.data?.message || (error as any)?.error}
           </Message>
         )}
-        {myOrders && myOrders.length === 0 && (
-          <Message>You have no orders</Message>
-        )}
-        {myOrders && myOrders.length > 0 && (
-          <TableContent myOrders={myOrders} />
-        )}
+        {myOrders?.length === 0 && <Message>You have no orders</Message>}
+        {myOrders?.length > 0 && <TableContent myOrders={myOrders} />}
       </Col>
     </Row>
   );
