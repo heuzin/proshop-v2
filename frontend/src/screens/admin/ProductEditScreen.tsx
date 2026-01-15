@@ -10,6 +10,7 @@ import FormContainer from "../../components/FormContainer.tsx";
 import {
   useUpdateProductMutation,
   useGetProductDetailsQuery,
+  useUploadProductImageMutation,
 } from "../../slices/productsApiSlice.ts";
 
 const ProductEditScreen = () => {
@@ -26,12 +27,14 @@ const ProductEditScreen = () => {
   const {
     data: product,
     isLoading,
-    refetch,
     error,
   } = useGetProductDetailsQuery(productId!);
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
+
+  const [uploadProductImage, { isLoading: loadingUpload }] =
+    useUploadProductImageMutation();
 
   const navigate = useNavigate();
 
@@ -70,6 +73,20 @@ const ProductEditScreen = () => {
     }
   };
 
+  const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e?.target?.files?.[0]) return;
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      setImage(res.image);
+      toast.success("Image Uploaded Successfully");
+    } catch (error) {
+      toast.error((error as any)?.data?.message || (error as any)?.message);
+    }
+  };
+
   const renderContent = () => {
     if (isLoading) {
       return <Loader />;
@@ -81,6 +98,7 @@ const ProductEditScreen = () => {
         </Message>
       );
     }
+
     return (
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="name" className="my-2">
@@ -103,7 +121,22 @@ const ProductEditScreen = () => {
           ></Form.Control>
         </Form.Group>
 
-        {/* IMAGE INPUT PLACEHOLDER */}
+        <Form.Group controlId="image" className="my-2">
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter image url"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+          ></Form.Control>
+          <Form.Control
+            type="file"
+            label="Choose File"
+            custom
+            onChange={uploadFileHandler}
+          ></Form.Control>
+          {loadingUpload && <Loader />}
+        </Form.Group>
 
         <Form.Group controlId="brand" className="my-2">
           <Form.Label>Brand</Form.Label>
