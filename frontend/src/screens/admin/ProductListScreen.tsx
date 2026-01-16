@@ -10,18 +10,18 @@ import { toast } from "react-toastify";
 import {
   useGetProductsQuery,
   useCreateProductMutation,
+  useDeleteProductMutation,
 } from "../../slices/productsApiSlice.ts";
 
 const CreateProduct = ({ refetch }: { refetch: () => void }) => {
-  const [createProduct, { isLoading: loadingCreate }] =
-    useCreateProductMutation();
+  const [createProduct] = useCreateProductMutation();
 
   const createProductHandler = async () => {
     if (window.confirm("Are you sure you want to create a new product?")) {
       try {
         await createProduct({});
         refetch();
-      } catch (err) {
+      } catch (err: any) {
         toast.error(err.data?.message || err.error);
       }
     }
@@ -47,8 +47,18 @@ const ProductsTable = ({
   products: any[];
   refetch: () => void;
 }) => {
-  const deleteHandler = (id: string) => {
-    console.log("delete", id);
+  const [deleteProduct] = useDeleteProductMutation();
+
+  const deleteHandler = async (id: string) => {
+    if (window.confirm("Are you sure?")) {
+      try {
+        await deleteProduct(id);
+        toast.success("Product deleted successfully");
+        refetch();
+      } catch (err: any) {
+        toast.error(err.data?.message || err.error);
+      }
+    }
   };
 
   return (
