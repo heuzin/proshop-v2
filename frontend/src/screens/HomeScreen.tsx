@@ -10,8 +10,14 @@ import Message from "../components/Message.tsx";
 import Paginate from "../components/Paginate.tsx";
 
 const HomeScreen = () => {
-  const { pageNumber } = useParams<{ pageNumber?: string }>();
-  const { data, isLoading, error } = useGetProductsQuery({ pageNumber });
+  const { pageNumber, keyword } = useParams<{
+    pageNumber?: string;
+    keyword?: string;
+  }>();
+  const { data, isLoading, error } = useGetProductsQuery({
+    pageNumber,
+    keyword,
+  });
 
   return (
     <>
@@ -31,7 +37,11 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={data?.pages} page={data?.page} />
+          <Paginate
+            pages={data?.pages}
+            page={data?.page}
+            keyword={keyword ? keyword : ""}
+          />
         </>
       )}
     </>

@@ -5,11 +5,21 @@ import Products from "../models/productModel.ts";
 // @route GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 4;
+  const pageSize = 8;
   const page = Number(req.query.pageNumber) || 1;
-  const count = await Products.countDocuments({});
 
-  const products = await Products.find({})
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+
+  const count = await Products.countDocuments({ ...keyword });
+
+  const products = await Products.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
