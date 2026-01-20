@@ -1,11 +1,13 @@
 import React from "react";
+import { toast } from "react-toastify";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 
-import Message from "../../components/Message.tsx";
 import Loader from "../../components/Loader.tsx";
-import { toast } from "react-toastify";
+import Message from "../../components/Message.tsx";
+import Paginate from "../../components/Paginate.tsx";
 
 import {
   useGetProductsQuery,
@@ -41,10 +43,10 @@ const CreateProduct = ({ refetch }: { refetch: () => void }) => {
 };
 
 const ProductsTable = ({
-  products,
+  data,
   refetch,
 }: {
-  products: any[];
+  data: any[];
   refetch: () => void;
 }) => {
   const [deleteProduct] = useDeleteProductMutation();
@@ -77,7 +79,7 @@ const ProductsTable = ({
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {data?.products.map((product) => (
             <tr key={product._id}>
               <td>{product._id}</td>
               <td>{product.name}</td>
@@ -102,12 +104,16 @@ const ProductsTable = ({
           ))}
         </tbody>
       </Table>
+      <Paginate pages={data?.pages} page={data?.page} isAdmin={true} />
     </>
   );
 };
 
 const ProductListScreen = () => {
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery({});
+  const { pageNumber } = useParams<{ pageNumber?: string }>();
+  const { data, isLoading, error, refetch } = useGetProductsQuery({
+    pageNumber,
+  });
 
   if (isLoading) {
     return <Loader />;
@@ -119,7 +125,7 @@ const ProductListScreen = () => {
     );
   }
 
-  return <ProductsTable products={products} refetch={refetch} />;
+  return <ProductsTable data={data} refetch={refetch} />;
 };
 
 export default ProductListScreen;

@@ -68,6 +68,20 @@ const ProductScreen = () => {
     }
   };
 
+  const renderContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
+    if (error) {
+      return (
+        <Message variant="danger">
+          {(error as any)?.data?.message || (error as any).error}
+        </Message>
+      );
+    }
+    return <Products />;
+  };
+
   const Products = () => (
     <>
       <Row>
@@ -215,15 +229,7 @@ const ProductScreen = () => {
       <Link className="btn btn-light my-3" to="/">
         Go Back
       </Link>
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant="danger">
-          {error?.data?.message || error.error}
-        </Message>
-      ) : (
-        <Products />
-      )}
+      {renderContent()}
     </>
   );
 };
