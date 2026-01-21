@@ -7,10 +7,12 @@ import {
   updateProduct,
   deleteProduct,
   createProductReview,
+  getTopProducts,
 } from "../controllers/productController.ts";
 import { protect, admin } from "../middleware/authMiddleware.ts";
 
 router.route("/").get(getProducts).post(protect, admin, createProduct);
+router.route("/top").get(getTopProducts);
 router
   .route("/:id")
   .get(getProductById)

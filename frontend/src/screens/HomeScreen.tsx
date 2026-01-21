@@ -8,6 +8,7 @@ import { useGetProductsQuery } from "../slices/productsApiSlice.ts";
 import Loader from "../components/Loader.tsx";
 import Message from "../components/Message.tsx";
 import Paginate from "../components/Paginate.tsx";
+import ProductCarousel from "../components/ProductCarousel.tsx";
 
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams<{
@@ -21,7 +22,9 @@ const HomeScreen = () => {
 
   return (
     <>
-      {keyword && (
+      {!keyword ? (
+        <ProductCarousel />
+      ) : (
         <Link to="/" className="btn btn-light mb-4">
           Go Back
         </Link>
