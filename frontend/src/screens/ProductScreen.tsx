@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
+import Meta from "../components/Meta.tsx";
 import Rating from "../components/Rating.tsx";
 import Loader from "../components/Loader.tsx";
 import Message from "../components/Message.tsx";
@@ -68,22 +69,9 @@ const ProductScreen = () => {
     }
   };
 
-  const renderContent = () => {
-    if (isLoading) {
-      return <Loader />;
-    }
-    if (error) {
-      return (
-        <Message variant="danger">
-          {(error as any)?.data?.message || (error as any).error}
-        </Message>
-      );
-    }
-    return <Products />;
-  };
-
   const Products = () => (
     <>
+      <Meta title={product?.name} />
       <Row>
         <Col md={5}>
           <Image src={product?.image} alt={product?.name} fluid />
@@ -223,6 +211,20 @@ const ProductScreen = () => {
       </Row>
     </>
   );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
+    if (error) {
+      return (
+        <Message variant="danger">
+          {(error as any)?.data?.message || (error as any).error}
+        </Message>
+      );
+    }
+    return <Products />;
+  };
 
   return (
     <>

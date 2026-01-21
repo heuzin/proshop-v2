@@ -135,8 +135,8 @@ const ProductEditScreen = () => {
             custom
             onChange={uploadFileHandler}
           ></Form.Control>
-          {loadingUpload && <Loader />}
         </Form.Group>
+        {loadingUpload && <Loader />}
 
         <Form.Group controlId="brand" className="my-2">
           <Form.Label>Brand</Form.Label>
